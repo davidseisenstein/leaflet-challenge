@@ -65,7 +65,8 @@ d3.json(url, function(data) {
             fillcolor: chooseColor(location[2]),
             opacity: 1,
             radius: features[i].properties.mag * 10000
-        }))
+        }).bindPopup("<h2>" + features[i].properties.title + "</h2>")
+        )
       }
   
     }
