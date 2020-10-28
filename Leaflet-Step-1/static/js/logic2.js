@@ -1,11 +1,10 @@
 // Creating map object
 var myMap = L.map("map", {
     center: [39.5, -98.35],
-    zoom: 5
+    zoom: 8
 });
 
-// Add a tile layer (the background map image) to our map
-// We use the addTo method to add objects to our map
+// adding tile layer
 L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
   tileSize: 512,
@@ -15,34 +14,32 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   accessToken: API_KEY
 }).addTo(myMap);
 
-
 // Load in geojson data
 
 var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
-// Grab the data with d3
+// Grab data with d3
 d3.json(url, function(data) {
+    // isolate the features from the geojson
     var features = data.features;
-    // Create a new marker cluster group
+    // Create a new marker layer
     var markers = L.markerClusterGroup();
-  
-    // Loop through data
+
+    // loop through the data
     for (var i = 0; i < features.length; i++) {
-  
-      // Set the data location property to a variable
-      var location = features[i].geometry.coordinates;
-  
-      // Check for location property
-      if (location) {
-  
-        // Add a new marker to the cluster group and bind a pop-up
-        markers.addLayer(L.marker([location[1], location[0]])
-          .bindPopup(features[i].properties.title));
-      }
-  
+        // select the specific quake
+        var quake = features[i];
+        // set the data location property to a variable
+        var location = quake.geometry.coordinates;
+        // check for location property
+        if (location) {
+            // add a new marker to the group and bind a popup
+            markers.addLayer(L.marker([location[1], location[0]])
+                .bindPopup(quake.properties.title));
+        }
+
     }
-  
-    // Add our marker cluster layer to the map
+
     myMap.addLayer(markers);
-  
-  });
+
+});
