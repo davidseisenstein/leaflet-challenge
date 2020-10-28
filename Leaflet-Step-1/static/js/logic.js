@@ -22,6 +22,28 @@ var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.ge
 // Create an array which will store the circles
 var quakeCircles = [];
 
+// function that will determine the color of the circle based on depth of quake
+function chooseColor(depth) {
+    if (depth < 10) {
+        return "green"
+    }
+    else if (depth < 30)  {
+        return "light green"
+    }
+    else if (depth < 50) {
+        return "yellow"
+    }
+    else if (depth < 70) {
+        return "light orange"
+    }
+    else if (depth < 90) {
+        return "orange"
+    }
+    else {
+        return "red"
+    }
+}
+
 // Grab the data with d3
 d3.json(url, function(data) {
     var features = data.features;
@@ -39,8 +61,9 @@ d3.json(url, function(data) {
   
         // Add a new marker to the cluster group and bind a pop-up
         quakeCircles.push(L.circle([location[1],location[0]], {
-            color: "red",
-            fillcolor: "red",
+            color: chooseColor(location[2]),
+            fillcolor: chooseColor(location[2]),
+            opacity: 1,
             radius: features[i].properties.mag * 10000
         }))
       }
