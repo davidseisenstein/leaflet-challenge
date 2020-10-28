@@ -17,8 +17,10 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
 // Load in geojson data
-
 var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+
+// Create an array which will store the circles
+var quakeCircles = [];
 
 // Grab the data with d3
 d3.json(url, function(data) {
@@ -36,13 +38,17 @@ d3.json(url, function(data) {
       if (location) {
   
         // Add a new marker to the cluster group and bind a pop-up
-        markers.addLayer(L.marker([location[1], location[0]])
-          .bindPopup(features[i].properties.title));
+        quakeCircles.push(L.circle([location[1],location[0]], {
+            color: "red",
+            fillcolor: "red",
+            radius: features[i].properties.mag * 10000
+        }))
       }
   
     }
-  
+    
+    var quakeLayer = L.layerGroup(quakeCircles)
     // Add our marker cluster layer to the map
-    myMap.addLayer(markers);
+    myMap.addLayer(quakeLayer);
   
   });
