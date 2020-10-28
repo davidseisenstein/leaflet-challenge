@@ -74,5 +74,22 @@ d3.json(url, function(data) {
     var quakeLayer = L.layerGroup(quakeCircles)
     // Add our marker cluster layer to the map
     myMap.addLayer(quakeLayer);
+
+    // Create our legend
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function() {
+        var div = L.DomUtil.create("div","info legend");
+        var depths = [-10, 10, 30, 50, 70, 90];
+        var labels = [];
+
+        // loop through our depth intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < depths.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + chooseColor(depths[i] + 1) + '"></i> ' +
+                depths[i] + (depths[i + 1] ? '&ndash;' + depths[i + 1] + '<br>' : '+');
+        }
+    }   
+
+    legend.addTo(myMap)
   
   });
